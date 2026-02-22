@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -16,6 +16,7 @@ import { FileHandle } from '../_model/file-handle.model';
 export class AddNewProductComponent implements OnInit {
 
   isNewProduct: boolean = true;
+  imagePreviewCols: number = 4;
 
   product: Product = {
     productId: null,
@@ -34,6 +35,7 @@ export class AddNewProductComponent implements OnInit {
 
   // ✅ FIXED ngOnInit
   ngOnInit(): void {
+    this.updateImagePreviewCols();
     const resolvedProduct = this.activatedRoute.snapshot.data['product'];
 
     if (resolvedProduct) {
@@ -43,6 +45,11 @@ export class AddNewProductComponent implements OnInit {
       this.resetProduct();
       this.isNewProduct = true;
     }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.updateImagePreviewCols();
   }
 
   // ✅ ADD PRODUCT (FIXED)
@@ -126,5 +133,21 @@ export class AddNewProductComponent implements OnInit {
       productDiscountedPrice: 0,
       productImages: []
     };
+  }
+
+  private updateImagePreviewCols(): void {
+    const screenWidth = window.innerWidth;
+
+    if (screenWidth < 576) {
+      this.imagePreviewCols = 2;
+      return;
+    }
+
+    if (screenWidth < 992) {
+      this.imagePreviewCols = 3;
+      return;
+    }
+
+    this.imagePreviewCols = 4;
   }
 }

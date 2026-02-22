@@ -2,6 +2,7 @@
     <div align ="right" class="mb-3">
         <button (click)="checkout()" color="primary" mat-raised-button>Checkout</button>
     </div>
+    <div class="table-responsive-container">
     <table mat-table [dataSource]="cartDetails"
                     class="mat-elevation-z8">
         <ng-container matColumnDef="Name">
@@ -34,4 +35,5 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    </div>
 </div>

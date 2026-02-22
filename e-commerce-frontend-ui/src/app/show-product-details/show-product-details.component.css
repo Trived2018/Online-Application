@@ -2,10 +2,21 @@ table{
     width: 100%;
 }
 
+.table-responsive-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
 table td{
     padding:10px;
 }
 
 .mat-column-description{
     width: 35% !important;
+}
+
+@media (max-width: 767.98px) {
+    table {
+        min-width: 900px;
+    }
 }

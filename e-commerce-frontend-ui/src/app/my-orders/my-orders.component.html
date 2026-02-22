@@ -1,4 +1,5 @@
 <div class="container mt-5">
+    <div class="table-responsive-container">
     <table mat-table [dataSource]="myOrderDetails" class="mat-elevation-z8">
 
         <ng-container matColumnDef="Name">
@@ -29,4 +30,5 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    </div>
 </div>

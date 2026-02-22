@@ -3,7 +3,7 @@
     <div class="row">
 
       <!-- LEFT SIDE : FORM -->
-      <div class="col-6">
+      <div class="col-12 col-lg-6">
         <form #productForm="ngForm" (ngSubmit)="addProduct(productForm)">
 
           <!-- Product Name -->
@@ -77,7 +77,7 @@
       </div>
 
       <!-- RIGHT SIDE : IMAGE UPLOAD -->
-      <div class="col-6">
+      <div class="col-12 col-lg-6">
 
         <!-- Drag & Drop -->
         <div
@@ -104,7 +104,7 @@
 
         <!-- Image Preview -->
         <div class="mt-5">
-          <mat-grid-list cols="4" rowHeight="1:1">
+          <mat-grid-list [cols]="imagePreviewCols" rowHeight="1:1">
             <mat-grid-tile *ngFor="let file of product.productImages; let i = index">
               <div style="position: relative;">
                 <span class="btn-remove-image" (click)="removeImages(i)">x</span>
