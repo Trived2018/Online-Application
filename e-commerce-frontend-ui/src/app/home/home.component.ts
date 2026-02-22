@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ProductService } from '../_services/product.service';
 import { map } from 'rxjs/operators';
 import { ImageProcessingService } from '../image-processing.service';
@@ -14,7 +14,9 @@ import { Router, NavigationEnd } from '@angular/router';
 export class HomeComponent implements OnInit {
 
   pageNumber: number=0;
-  productDetails=[];
+  productDetails: Product[] = [];
+  gridCols: number = 4;
+  gridRowHeight: string = '3:5';
 
   showLoadButton=false;
 
@@ -23,10 +25,16 @@ export class HomeComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
+    this.updateGridLayout();
     this.getAllProducts();
   }
 
-  searchByKeyword(searchKeyword){
+  @HostListener('window:resize')
+  onResize(): void {
+    this.updateGridLayout();
+  }
+
+  searchByKeyword(searchKeyword: string){
     console.log(searchKeyword);
     this.pageNumber = 0;
     this.productDetails=[];
@@ -59,8 +67,27 @@ export class HomeComponent implements OnInit {
     this.getAllProducts();
   }
 
-  showProductDetails(productId){
+  showProductDetails(productId: number){
     this.router.navigate(['/productViewDetails',{productId: productId}]);
+  }
+
+  private updateGridLayout(): void {
+    const screenWidth = window.innerWidth;
+
+    if (screenWidth < 576) {
+      this.gridCols = 1;
+      this.gridRowHeight = '1:1.4';
+      return;
+    }
+
+    if (screenWidth < 992) {
+      this.gridCols = 2;
+      this.gridRowHeight = '1:1.2';
+      return;
+    }
+
+    this.gridCols = 4;
+    this.gridRowHeight = '3:5';
   }
 
 }

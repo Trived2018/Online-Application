@@ -1,3 +1,27 @@
 .space-buttons{
     flex: 1 1 auto;
 }
+
+.nav-toolbar {
+    height: auto;
+    min-height: 64px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 16px;
+}
+
+@media (max-width: 575.98px) {
+    .top-toolbar {
+        min-height: 56px;
+        padding: 8px 12px;
+    }
+
+    .top-toolbar span {
+        font-size: 14px;
+    }
+
+    .nav-toolbar {
+        padding: 8px 12px;
+    }
+}

@@ -19,7 +19,8 @@ mat-grid-tile {
     min-width: 100px;
     display: table;
     background-color: #eee;
-    width: 300px;
+    width: 100%;
+    max-width: 360px;
     border: dashed 1px #aaa;
     border-radius: 10px;
     margin-left: auto;
@@ -35,4 +36,10 @@ mat-grid-tile {
 .browse-button{
     color:blue;
     cursor: pointer;
+}
+
+@media (max-width: 575.98px) {
+    .dropzone {
+        max-width: none;
+    }
 }

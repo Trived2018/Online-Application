@@ -1,3 +1,14 @@
 table{
     width: 100%;
 }
+
+.table-responsive-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+@media (max-width: 767.98px) {
+    table {
+        min-width: 900px;
+    }
+}

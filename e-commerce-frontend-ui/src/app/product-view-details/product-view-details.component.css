@@ -3,7 +3,7 @@
 }
 
 .image-container{
-    height: 500px;
+    height: 420px;
     position: relative;
 }
 
@@ -16,4 +16,29 @@
     left: 0;
     right: 0;
     margin: auto;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.action-buttons button {
+    flex: 1 1 0;
+}
+
+@media (max-width: 991.98px) {
+    .image-container {
+        height: 320px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .image-container {
+        height: 260px;
+    }
 }
