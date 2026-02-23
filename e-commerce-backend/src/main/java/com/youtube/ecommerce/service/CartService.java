@@ -23,13 +23,18 @@ public class CartService {
     private UserDao userDao;
 
     public void deleteCartItem(Integer cartId){
-
-        if(cartDao.existsById(cartId)){
-            cartDao.deleteById(cartId);
-        } else {
-            System.out.println("Cart ID not found: " + cartId);
+        String username = JwtRequestFilter.CURRENT_USER;
+        User user = userDao.findById(username).orElse(null);
+        if (user == null) {
+            return;
         }
 
+        List<Cart> userCarts = cartDao.findByUser(user);
+        List<Cart> cartsToDelete = userCarts.stream()
+                .filter(cart -> cart.getCardId().equals(cartId) || cart.getProduct().getProductId().equals(cartId))
+                .collect(Collectors.toList());
+
+        cartsToDelete.forEach(cart -> cartDao.deleteById(cart.getCardId()));
     }
     public Cart addToCart(Integer productId){
         Product product=productDao.findById(productId).get();
@@ -41,7 +46,9 @@ public class CartService {
         }
 
         List<Cart> cartList = cartDao.findByUser(user);
-        List<Cart> filteredList = cartList.stream().filter(x->x.getProduct().getProductId() == productId).collect(Collectors.toList());
+        List<Cart> filteredList = cartList.stream()
+                .filter(x -> x.getProduct().getProductId().equals(productId))
+                .collect(Collectors.toList());
 
         if(filteredList.size()>0){
             return null;

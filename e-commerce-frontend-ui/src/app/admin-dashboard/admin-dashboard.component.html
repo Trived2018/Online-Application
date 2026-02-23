@@ -1,0 +1,25 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Admin Dashboard</h2>
+    <button class="btn btn-outline-primary btn-sm" (click)="loadStats()" [disabled]="isLoading">
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger py-2">
+    {{ errorMessage }}
+  </div>
+
+  <div class="stats-grid">
+    <div class="stats-card">
+      <div class="stats-label">Total Users</div>
+      <div class="stats-value">{{ totalUsers }}</div>
+    </div>
+
+    <div class="stats-card">
+      <div class="stats-label">Online Users Now</div>
+      <div class="stats-value">{{ onlineUsers }}</div>
+    </div>
+  </div>
+</div>
+

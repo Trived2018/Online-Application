@@ -28,7 +28,7 @@
         <ng-container matColumnDef="Action">
             <th mat-header-cell *matHeaderCellDef> Action </th>
             <td mat-cell *matCellDef="let element">
-                <button mat-raised-button color="warn" (click)="deleteCartItem(element.product.productId); $event.stopPropagation()">Delete</button>
+                <button mat-raised-button color="warn" (click)="deleteCartItem(element.cardId); $event.stopPropagation()">Delete</button>
             </td>
         </ng-container>
 

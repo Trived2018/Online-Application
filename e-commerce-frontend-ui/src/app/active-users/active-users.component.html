@@ -1,0 +1,47 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Active Users</h2>
+    <button class="btn btn-outline-primary btn-sm" (click)="loadPresenceData()" [disabled]="isLoading">
+      Refresh
+    </button>
+  </div>
+
+  <div class="summary-card mb-3">
+    <div class="summary-label">Online Users Now</div>
+    <div class="summary-value">{{ onlineUsersCount }}</div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger py-2 mb-3">
+    {{ errorMessage }}
+  </div>
+
+  <div class="table-card">
+    <table class="table table-hover mb-0" *ngIf="onlineUsers.length > 0; else emptyState">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Last Seen</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of onlineUsers">
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ formatLastSeen(user.lastSeenIso) }}</td>
+          <td>
+            <span class="status-dot"></span>
+            <span class="status-text">Online</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state">No users online</div>
+  </ng-template>
+</div>

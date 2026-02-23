@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { PresenceService } from '../_services/presence.service';
 import { UserAuthService } from '../_services/user-auth.service';
 import { UserService } from '../_services/user.service';
 
@@ -11,6 +12,7 @@ import { UserService } from '../_services/user.service';
 export class HeaderComponent implements OnInit {
   constructor(
     private userAuthService: UserAuthService,
+    private presenceService: PresenceService,
     private router: Router,
     public userService: UserService
   ) {}
@@ -22,6 +24,7 @@ export class HeaderComponent implements OnInit {
   }
 
   public logout() {
+    this.presenceService.stopHeartbeatAndMarkOffline();
     this.userAuthService.clear();
     this.router.navigate(['/']);
   }

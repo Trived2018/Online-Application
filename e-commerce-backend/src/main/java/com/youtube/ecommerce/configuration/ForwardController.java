@@ -7,8 +7,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ForwardController {
 
     @GetMapping(value = {
+            "/admin",
+            "/admin/**",
+            "/user",
             "/register",
-            "/login"
+            "/login",
+            "/forbidden",
+            "/addNewProduct",
+            "/showProductDetails",
+            "/orderInformation",
+            "/productViewDetails",
+            "/buyProduct",
+            "/cart",
+            "/orderConfirm",
+            "/myOrders"
     })
     public String forward() {
         return "forward:/index.html";
