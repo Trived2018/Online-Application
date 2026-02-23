@@ -23,7 +23,7 @@ export class CartComponent implements OnInit {
   }
 
   deleteCartItem(cartId: number){
-    console.log("Deleting cart with productId:", cartId);
+    console.log("Deleting cart item with cardId:", cartId);
 
     this.productService.deleteCartItem(cartId).subscribe(
       (resp)=>{
@@ -31,13 +31,14 @@ export class CartComponent implements OnInit {
 
         // 🔥 REMOVE ITEM FROM UI IMMEDIATELY
         this.cartDetails = this.cartDetails.filter(
-          item => item.product.productId !== cartId
+          item => item.cardId !== cartId
         );
 
       },
       (err)=>{
         console.log("Error:", err);
-        alert("Failed to delete: " + (err.error?.message || err.statusText));
+        const errorMessage = err?.error?.message || err?.statusText || err?.message || "Unknown error";
+        alert("Failed to delete: " + errorMessage);
       }
     );
   }

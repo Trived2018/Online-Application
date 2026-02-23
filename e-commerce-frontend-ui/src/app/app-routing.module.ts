@@ -17,11 +17,13 @@ import { RegisterComponent } from './register/register.component';
 import { CartComponent } from './cart/cart.component';
 import { MyOrdersComponent } from './my-orders/my-orders.component';
 import { OrderDetailsComponent } from './order-details/order-details.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { ActiveUsersComponent } from './active-users/active-users.component';
 
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'admin', component: AdminComponent, canActivate: [AuthGuard], data: { roles: ['Admin'] } },
+  { path: 'admin', component: AdminDashboardComponent, canActivate: [AuthGuard], data: { roles: ['Admin'] } },
   { path: 'user', component: UserComponent, canActivate: [AuthGuard], data: { roles: ['User'] } },
   { path: 'login', component: LoginComponent },
   { path: 'forbidden', component: ForbiddenComponent },
@@ -33,6 +35,7 @@ const routes: Routes = [
   },
   { path: 'showProductDetails', component: ShowProductDetailsComponent, canActivate: [AuthGuard], data: { roles: ['Admin'] } },
   { path: 'orderInformation', component: OrderDetailsComponent, canActivate: [AuthGuard], data: { roles: ['Admin'] } },
+  { path: 'admin/active-users', component: ActiveUsersComponent, canActivate: [AuthGuard], data: { roles: ['Admin'] } },
   { path: 'productViewDetails', component: ProductViewDetailsComponent, resolve: { product: ProductResolveService } },
   {
     path: 'buyProduct', component: BuyProductComponent, canActivate: [AuthGuard], data: { roles: ['User'] },

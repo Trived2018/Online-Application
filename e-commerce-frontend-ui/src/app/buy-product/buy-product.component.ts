@@ -16,6 +16,7 @@ export class BuyProductComponent implements OnInit {
 
   isSingleProductCheckout: string = '';
   productDetails: Product[]=[];
+  isSubmitting = false;
 
   orderDetails:OrderDetails={
     fullName: '',
@@ -44,10 +45,20 @@ export class BuyProductComponent implements OnInit {
   }
 
   public placeOrder(orderForm: NgForm){
-    this.productService.placeOrder(this.orderDetails,this.isSingleProductCheckout).subscribe(
+    if (!this.hasValidOrderDetails(orderForm)) {
+      return;
+    }
+
+    const orderPayload: OrderDetails = {
+      ...this.orderDetails,
+      contactNumber: `+91${this.orderDetails.contactNumber}`
+    };
+
+    this.productService.placeOrder(orderPayload,this.isSingleProductCheckout).subscribe(
       (resp)=>{
         console.log(resp);
         orderForm.reset();
+        this.isSubmitting = false;
 
         const ngZone = this.injector.get(NgZone);
         ngZone.run(
@@ -57,6 +68,7 @@ export class BuyProductComponent implements OnInit {
         )
       },
       (err)=> {
+        this.isSubmitting = false;
         console.log(err);
       }
     )
@@ -94,6 +106,11 @@ export class BuyProductComponent implements OnInit {
   }
 
   createTransactionAndPlaceOrder(orderForm: NgForm){
+    if (!this.hasValidOrderDetails(orderForm)) {
+      return;
+    }
+
+    this.isSubmitting = true;
     let amount = this.getCalculatedGrandTotal();
     this.productService.createTransaction(amount).subscribe(
       (response)=>{
@@ -101,6 +118,7 @@ export class BuyProductComponent implements OnInit {
         this.openTransactionModal(response,orderForm);
       },
       (error)=>{
+        this.isSubmitting = false;
         console.log(error);
       }
     );
@@ -142,5 +160,27 @@ export class BuyProductComponent implements OnInit {
   processResponse(resp: any, orderForm: NgForm){
     this.orderDetails.transactionId = resp.razorpay_payment_id;
     this.placeOrder(orderForm);
+  }
+
+  private hasValidOrderDetails(orderForm: NgForm): boolean {
+    const fullName = (this.orderDetails.fullName || '').trim();
+    const fullAddress = (this.orderDetails.fullAddress || '').trim();
+    const contactNumber = (this.orderDetails.contactNumber || '').trim();
+    const contactNumberPattern = /^\d{10}$/;
+
+    this.orderDetails.fullName = fullName;
+    this.orderDetails.fullAddress = fullAddress;
+    this.orderDetails.contactNumber = contactNumber;
+
+    if (!fullName || !fullAddress || !contactNumberPattern.test(contactNumber)) {
+      orderForm.form.markAllAsTouched();
+      this.isSubmitting = false;
+      return false;
+    }
+    return true;
+  }
+
+  onContactNumberChange(value: string): void {
+    this.orderDetails.contactNumber = (value || '').replace(/\D/g, '').slice(0, 10);
   }
 }

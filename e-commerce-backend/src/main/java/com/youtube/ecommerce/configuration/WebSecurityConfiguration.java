@@ -51,6 +51,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/*.css",
                         "/assets/**",
                         "/*.ico",
+                        "/admin",
+                        "/admin/**",
+                        "/user",
+                        "/forbidden",
+                        "/addNewProduct",
+                        "/showProductDetails",
+                        "/orderInformation",
+                        "/productViewDetails",
+                        "/buyProduct",
+                        "/cart",
+                        "/orderConfirm",
+                        "/myOrders",
                         "/register",
                         "/login"
                 ).permitAll()
@@ -62,6 +74,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/getAllProducts",
                         "/getProductDetailsById/**"
                 ).permitAll()
+
+                .antMatchers("/api/admin/**").hasRole("Admin")
+                .antMatchers("/api/presence/**").authenticated()
 
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()

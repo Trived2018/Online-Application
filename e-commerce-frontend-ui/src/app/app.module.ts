@@ -36,6 +36,8 @@ import { CartComponent } from './cart/cart.component';
 import { MyOrdersComponent } from './my-orders/my-orders.component';
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { ActiveUsersComponent } from './active-users/active-users.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +58,9 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
     RegisterComponent,
     CartComponent,
     MyOrdersComponent,
-    OrderDetailsComponent
+    OrderDetailsComponent,
+    AdminDashboardComponent,
+    ActiveUsersComponent
   ],
   imports: [
     BrowserModule,

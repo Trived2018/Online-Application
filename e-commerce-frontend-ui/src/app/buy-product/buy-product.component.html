@@ -6,17 +6,42 @@
                 <form #orderForm="ngForm" (ngSubmit)="createTransactionAndPlaceOrder(orderForm)">
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>Full name</mat-label>
-                        <input matInput placeholder="Full name" [(ngModel)]="orderDetails.fullName" name="fullName">
+                        <input matInput placeholder="Full name" [(ngModel)]="orderDetails.fullName" name="fullName" required #fullNameRef="ngModel">
+                        <mat-error *ngIf="(fullNameRef.touched || orderForm.submitted) && fullNameRef.errors?.required">
+                            Full name is required
+                        </mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>Full address</mat-label>
-                        <input matInput placeholder="Full address" [(ngModel)]="orderDetails.fullAddress" name="fullAddress">
+                        <input matInput placeholder="Full address" [(ngModel)]="orderDetails.fullAddress" name="fullAddress" required #fullAddressRef="ngModel">
+                        <mat-error *ngIf="(fullAddressRef.touched || orderForm.submitted) && fullAddressRef.errors?.required">
+                            Full address is required
+                        </mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Contact number</mat-label>
-                        <input matInput placeholder="Contact number" [(ngModel)]="orderDetails.contactNumber" name="contactNumber">
+                        <mat-label>Phone Number</mat-label>
+                        <span matPrefix>+91&nbsp;</span>
+                        <input
+                            matInput
+                            placeholder="10-digit number"
+                            [ngModel]="orderDetails.contactNumber"
+                            (ngModelChange)="onContactNumberChange($event)"
+                            name="contactNumber"
+                            required
+                            pattern="^\d{10}$"
+                            maxlength="10"
+                            minlength="10"
+                            inputmode="numeric"
+                            #contactNumberRef="ngModel"
+                        >
+                        <mat-error *ngIf="(contactNumberRef.touched || orderForm.submitted) && contactNumberRef.errors?.required">
+                            Phone number is required
+                        </mat-error>
+                        <mat-error *ngIf="(contactNumberRef.touched || orderForm.submitted) && contactNumberRef.errors?.pattern">
+                            Enter exactly 10 digits
+                        </mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="w-100">
@@ -24,7 +49,9 @@
                         <input matInput placeholder="Alternate contact number" [(ngModel)]="orderDetails.alternateContactNumber" name="alternateContactNumber">
                     </mat-form-field>
                     <div align="right">
-                        <button type="submit" mat-stroked-button color="primary">Place Order</button>
+                        <button type="submit" mat-stroked-button color="primary" [disabled]="orderForm.invalid || isSubmitting">
+                            Place Order
+                        </button>
                     </div>
                 </form>
             </div>
