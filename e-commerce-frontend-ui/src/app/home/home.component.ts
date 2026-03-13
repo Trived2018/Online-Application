@@ -1,10 +1,11 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../_services/product.service';
 import { map } from 'rxjs/operators';
 import { ImageProcessingService } from '../image-processing.service';
 import { Product } from '../_model/product.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CartStateService } from '../_services/cart-state.service';
 
 @Component({
   selector: 'app-home',
@@ -15,30 +16,30 @@ export class HomeComponent implements OnInit {
 
   pageNumber: number=0;
   productDetails: Product[] = [];
-  gridCols: number = 4;
-  gridRowHeight: string = '3:5';
+  currentSearchKey: string = '';
 
   showLoadButton=false;
 
   constructor(private productService: ProductService,
     private imageProcessingService: ImageProcessingService,
+    private cartStateService: CartStateService,
+    private activatedRoute: ActivatedRoute,
     private router: Router) { }
 
   ngOnInit(): void {
-    this.updateGridLayout();
-    this.getAllProducts();
-  }
-
-  @HostListener('window:resize')
-  onResize(): void {
-    this.updateGridLayout();
+    this.activatedRoute.queryParamMap.subscribe((params) => {
+      this.currentSearchKey = (params.get('search') || '').trim();
+      this.pageNumber = 0;
+      this.productDetails = [];
+      this.getAllProducts(this.currentSearchKey);
+    });
   }
 
   searchByKeyword(searchKeyword: string){
-    console.log(searchKeyword);
+    this.currentSearchKey = (searchKeyword || '').trim();
     this.pageNumber = 0;
     this.productDetails=[];
-    this.getAllProducts(searchKeyword);
+    this.getAllProducts(this.currentSearchKey);
   }
 
   public getAllProducts(searchKey: string=""){
@@ -64,30 +65,23 @@ export class HomeComponent implements OnInit {
 
   loadMoreProduct(){
     this.pageNumber=this.pageNumber+1;
-    this.getAllProducts();
+    this.getAllProducts(this.currentSearchKey);
   }
 
   showProductDetails(productId: number){
     this.router.navigate(['/productViewDetails',{productId: productId}]);
   }
 
-  private updateGridLayout(): void {
-    const screenWidth = window.innerWidth;
-
-    if (screenWidth < 576) {
-      this.gridCols = 1;
-      this.gridRowHeight = '1:1.4';
-      return;
-    }
-
-    if (screenWidth < 992) {
-      this.gridCols = 2;
-      this.gridRowHeight = '1:1.2';
-      return;
-    }
-
-    this.gridCols = 4;
-    this.gridRowHeight = '3:5';
+  addToCart(productId: number): void {
+    this.productService.addToCart(productId).subscribe(
+      (response) => {
+        console.log(response);
+        this.cartStateService.incrementCartCount();
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    );
   }
 
 }

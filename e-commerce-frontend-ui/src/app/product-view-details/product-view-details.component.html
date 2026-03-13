@@ -1,38 +1,54 @@
-<div class="container mt-5">
-
-    <div class="row g-4">
-        <div class="col-12 col-lg-6">
-
-            <div class="card image-container p-3">
-                <img [src]="product.productImages[selectedProductIndex].url" class="product-zoom-image">
-            </div>
-
-            <div class="mt-2">
-                <mat-grid-list [cols]="thumbnailColumns" gutterSize="10" rowHeight="1:1">
-                    <mat-grid-tile *ngFor="let file of product.productImages; let i=index;" (click)="changeIndex(i)" style="border: 1px solid lightgray; cursor:pointer">
-                         <img [src]="file.url" height="100px">
-                     </mat-grid-tile>
-                 </mat-grid-list> 
-            </div>
-            
+<div class="details-page" *ngIf="product">
+  <div class="details-wrapper">
+    <section class="left-column">
+      <div class="hero-image-box">
+        <div class="hero-image-stage">
+          <img
+            class="hero-image"
+            [src]="product.productImages[selectedProductIndex]?.url"
+            alt="Product image of {{ product.productName }}"
+            decoding="async">
         </div>
-        <div class="col-12 col-lg-6">
-            <div class="product-information">
-                <div class="mt-3">
-                    <h2>{{product.productName}}</h2>
-                </div>
-                <div class="mt-3">
-                    Description: <br>
-                    {{product.productDescription}}
-                </div>
-                <div class="mt-3">
-                    <b>Rs. {{product.productDiscountedPrice}}</b>&nbsp;&nbsp;<b style="text-decoration: line-through;">{{product.productActualPrice}}</b>
-                </div>
-                <div class="mt-4 action-buttons">
-                    <button mat-raised-button color="warn" (click)="buyProduct(product.productId)">Buy Now</button>
-                    <button mat-raised-button (click)="addToCart(product.productId)">Add to Cart</button>
-                </div>
-            </div>
-        </div>
-    </div>
+      </div>
+
+      <div class="thumbnail-row">
+        <button
+          class="thumb"
+          type="button"
+          *ngFor="let file of product.productImages; let i = index"
+          [class.active]="selectedProductIndex === i"
+          (click)="changeIndex(i)"
+          [attr.aria-label]="'View image ' + (i + 1)">
+          <img [src]="file.url" alt="Thumbnail {{ i + 1 }}">
+        </button>
+      </div>
+    </section>
+
+    <section class="right-column">
+      <h1 class="product-name">{{ product.productName }}</h1>
+
+      <div class="rating-wrap">
+        <span class="star filled" *ngFor="let _ of getStarArray(getFilledStars())">★</span>
+        <span class="star" *ngFor="let _ of getStarArray(getEmptyStars())">★</span>
+        <span class="rating-text">{{ product.rating || 4 }} / 5</span>
+      </div>
+
+      <p class="description">{{ product.productDescription }}</p>
+
+      <div class="price-block">
+        <span class="current-price">Rs. {{ product.productDiscountedPrice }}</span>
+        <span class="old-price" *ngIf="product.productActualPrice > product.productDiscountedPrice">
+          Rs. {{ product.productActualPrice }}
+        </span>
+        <span class="discount-chip" *ngIf="product.productActualPrice > product.productDiscountedPrice">
+          {{ getDiscountPercent() }}% OFF
+        </span>
+      </div>
+
+      <div class="action-row">
+        <button class="btn buy-btn" type="button" (click)="buyProduct(product.productId)">Buy Now</button>
+        <button class="btn cart-btn" type="button" (click)="addToCart(product.productId)">Add to Cart</button>
+      </div>
+    </section>
+  </div>
 </div>

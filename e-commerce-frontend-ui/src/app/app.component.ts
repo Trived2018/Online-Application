@@ -8,7 +8,7 @@ import { UserAuthService } from './_services/user-auth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'jwt-youtube-ui';
+  title = 'E-Commerce Application';
 
   constructor(
     private userAuthService: UserAuthService,

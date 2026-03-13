@@ -1,5 +1,68 @@
-table{
-    width: 100%;
+.orders-dashboard {
+    background: linear-gradient(180deg, #f4f8ff 0%, #edf3fb 100%);
+    border-radius: 18px;
+    padding: 20px;
+}
+
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.orders-header h2 {
+    margin: 0;
+    color: #13233f;
+    font-size: 1.45rem;
+    font-weight: 800;
+}
+
+.orders-header p {
+    margin: 6px 0 0;
+    color: #617086;
+    font-size: 0.92rem;
+}
+
+.filters-panel {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    background: #ffffff;
+    border: 1px solid #e5eaf3;
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.filters-label {
+    color: #334155;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.order-filters {
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+::ng-deep .order-filters .mat-button-toggle {
+    color: #334155;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+}
+
+::ng-deep .order-filters .mat-button-toggle-checked {
+    background: #0f766e;
+    color: #ffffff;
+}
+
+.table-card {
+    background: #ffffff;
+    border: 1px solid #e5eaf3;
+    border-radius: 18px;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
 }
 
 .table-responsive-container {
@@ -7,8 +70,136 @@ table{
     overflow-x: auto;
 }
 
+.orders-table {
+    width: 100%;
+    min-width: 1080px;
+    background: #ffffff;
+}
+
+.orders-table th {
+    background: linear-gradient(135deg, #e8f0ff 0%, #dce9ff 100%);
+    color: #17305c;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 16px 12px;
+    border-bottom: 1px solid #d9e3f2;
+}
+
+.orders-table td {
+    padding: 14px 12px;
+    color: #162033;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+
+.orders-table tr:hover td {
+    background: #f8fbff;
+}
+
+.id-cell {
+    font-weight: 700;
+    color: #475569;
+}
+
+.product-cell {
+    max-width: 220px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.address-cell {
+    max-width: 260px;
+    color: #5f6f86;
+    line-height: 1.45;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.status-placed {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fdba74;
+}
+
+.status-delivered {
+    background: #ecfdf5;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+.deliver-btn {
+    border: none;
+    border-radius: 999px;
+    min-height: 38px;
+    padding: 0 14px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    box-shadow: 0 10px 18px rgba(37, 99, 235, 0.24);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.deliver-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 22px rgba(37, 99, 235, 0.28);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.deliver-btn .mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+}
+
+.action-done {
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
 @media (max-width: 767.98px) {
-    table {
-        min-width: 900px;
+    .orders-dashboard {
+        padding: 12px;
+        border-radius: 14px;
+    }
+
+    .orders-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .orders-header p {
+        font-size: 0.84rem;
+    }
+
+    .filters-panel {
+        padding: 12px;
+    }
+
+    .deliver-btn span {
+        display: none;
+    }
+
+    .deliver-btn {
+        min-width: 38px;
+        padding: 0 10px;
+        justify-content: center;
     }
 }

@@ -1,34 +1,69 @@
-<div class="container mt-5">
-    <div class="table-responsive-container">
-    <table mat-table [dataSource]="myOrderDetails" class="mat-elevation-z8">
+<section class="orders-page container mt-5">
+    <header class="orders-header">
+        <div>
+            <h2>My Orders</h2>
+            <p>Track and manage your purchases in one place.</p>
+        </div>
 
-        <ng-container matColumnDef="Name">
-            <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.orderFullName}} </td>
-        </ng-container>
+        <div class="filter-tabs" role="tablist" aria-label="Order filters">
+            <button type="button" class="filter-tab" [class.active]="activeFilter === 'All'" (click)="setFilter('All')">All</button>
+            <button type="button" class="filter-tab" [class.active]="activeFilter === 'Delivered'" (click)="setFilter('Delivered')">Delivered</button>
+            <button type="button" class="filter-tab" [class.active]="activeFilter === 'Pending'" (click)="setFilter('Pending')">Pending</button>
+            <button type="button" class="filter-tab" [class.active]="activeFilter === 'Cancelled'" (click)="setFilter('Cancelled')">Cancelled</button>
+        </div>
+    </header>
 
-        <ng-container matColumnDef="Address">
-            <th mat-header-cell *matHeaderCellDef> Address </th>
-            <td mat-cell *matCellDef="let element"> {{element.orderFullOrder}} </td>
-        </ng-container>
+    <div class="orders-grid" *ngIf="filteredOrders.length > 0; else emptyState">
+        <article class="order-card" *ngFor="let order of filteredOrders">
+            <div class="order-top">
+                <div class="order-meta">
+                    <span class="order-id">Order #{{ order.orderId }}</span>
+                    <span class="order-date">{{ getOrderDate(order) }}</span>
+                </div>
+                <span class="status-badge" [ngClass]="getStatusClass(order.orderStatus)">
+                    {{ getStatusLabel(order.orderStatus) }}
+                </span>
+            </div>
 
-        <ng-container matColumnDef="Contact No.">
-            <th mat-header-cell *matHeaderCellDef> Contact No. </th>
-            <td mat-cell *matCellDef="let element"> {{element.orderContactNumber}} </td>
-        </ng-container>
+            <div class="order-body">
+                <div class="product-media">
+                    <img
+                        [src]="getOrderImage(order)"
+                        [alt]="getProductName(order)"
+                        (error)="$any($event.target).src='assets/placeholder.svg'">
+                </div>
 
-        <ng-container matColumnDef="Amount">
-            <th mat-header-cell *matHeaderCellDef> Amount </th>
-            <td mat-cell *matCellDef="let element"> {{element.orderAmount}} </td>
-        </ng-container>
+                <div class="order-content">
+                    <h3 class="product-name">{{ getProductName(order) }}</h3>
 
-        <ng-container matColumnDef="Status">
-            <th mat-header-cell *matHeaderCellDef> Status </th>
-            <td mat-cell *matCellDef="let element"> {{element.orderStatus}} </td>
-        </ng-container>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Price</span>
+                            <strong class="detail-value">Rs. {{ order.orderAmount }}</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Contact</span>
+                            <span class="detail-value">{{ order.orderContactNumber }}</span>
+                        </div>
+                    </div>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+                    <p class="address-text">{{ order.orderFullOrder }}</p>
+                </div>
+            </div>
+
+            <div class="order-actions">
+                <button type="button" class="action-btn btn-soft" (click)="viewDetails(order)">View Details</button>
+                <button type="button" class="action-btn btn-outline" (click)="trackOrder(order)">Track Order</button>
+                <button type="button" class="action-btn btn-danger" *ngIf="canCancel(order)" (click)="cancelOrder(order)">Cancel Order</button>
+                <button type="button" class="action-btn btn-primary" (click)="buyAgain(order)">Buy Again</button>
+            </div>
+        </article>
     </div>
-</div>
+
+    <ng-template #emptyState>
+        <div class="empty-orders">
+            <h3>No orders found</h3>
+            <p>There are no orders in this filter right now.</p>
+        </div>
+    </ng-template>
+</section>

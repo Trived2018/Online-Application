@@ -15,11 +15,13 @@ import { Router } from '@angular/router';
 })
 export class ShowProductDetailsComponent implements OnInit {
   
-  showLoadMoreProductButton=false;
-  showTable=false;
-  pageNumber:number=0;
-  productDetails:Product[]=[];
-  displayedColumns: string[] = ['Id','Product Name','Product Description','Product Discounted Price','Product Actual Price','Actions'];
+  pageNumber: number = 0;
+  readonly pageSize: number = 12;
+  searchKeyword: string = '';
+  hasNextPage: boolean = false;
+  isLoading: boolean = false;
+  productDetails: Product[] = [];
+  displayedColumns: string[] = ['id', 'image', 'name', 'description', 'price', 'originalPrice', 'actions'];
   
   constructor(private productService: ProductService,
     public imagesDialog: MatDialog,
@@ -30,46 +32,61 @@ export class ShowProductDetailsComponent implements OnInit {
     this.getAllProducts();
   }
 
-  searchByKeyword(searchkeyword){
-    console.log(searchkeyword);
-    this.pageNumber=0;
-    this.productDetails=[];
-    this.getAllProducts(searchkeyword);
+  onSearch(): void {
+    this.pageNumber = 0;
+    this.getAllProducts();
   }
 
-  public getAllProducts(searchKeyword: string=""){
-    this.showTable=false;
-    this.productService.getAllProducts(this.pageNumber,searchKeyword)
+  clearSearch(): void {
+    this.searchKeyword = '';
+    this.pageNumber = 0;
+    this.getAllProducts();
+  }
+
+  public getAllProducts(): void {
+    this.isLoading = true;
+    this.productService.getAllProducts(this.pageNumber, this.searchKeyword)
     .pipe(
       map((x:Product[],i) =>x.map((product:Product)=> this.imageProcessingService.createImages(product)))
     )
     .subscribe(
       (resp:Product[])=>{
-        //console.log(resp);
-        resp.forEach(product=> this.productDetails.push(product));
-        console.log('msg',this.productDetails);
-        this.showTable=true;
-
-        if(resp.length==12){
-          this.showLoadMoreProductButton=true;
-        }else{
-          this.showLoadMoreProductButton=false;
-        }
-        //this.productDetails=resp;
+        this.productDetails = resp;
+        this.hasNextPage = resp.length === this.pageSize;
+        this.isLoading = false;
       },(error:HttpErrorResponse)=>{
         console.log(error);
+        this.isLoading = false;
       }
     );
   }
 
-  loadMoreProduct(){
-    this.pageNumber=this.pageNumber+1;
+  previousPage(): void {
+    if (this.pageNumber <= 0) {
+      return;
+    }
+
+    this.pageNumber = this.pageNumber - 1;
     this.getAllProducts();
   }
 
-  deleteProduct(productId){
+  nextPage(): void {
+    if (!this.hasNextPage) {
+      return;
+    }
+
+    this.pageNumber = this.pageNumber + 1;
+    this.getAllProducts();
+  }
+
+  deleteProduct(productId: number): void {
+    const pageHadSingleItem = this.productDetails.length === 1;
+
     this.productService.deleteProduct(productId).subscribe(
     (resp)=>{
+      if (pageHadSingleItem && this.pageNumber > 0) {
+        this.pageNumber = this.pageNumber - 1;
+      }
       this.getAllProducts();
     },
     (error:HttpErrorResponse)=>{
@@ -77,8 +94,8 @@ export class ShowProductDetailsComponent implements OnInit {
     }
     );
   }
-  showImages(product:Product){
-    console.log(product);
+
+  showImages(product: Product): void {
     this.imagesDialog.open(ShowProductImagesDialogComponent,{
       data:{
         images:product.productImages
@@ -88,7 +105,19 @@ export class ShowProductDetailsComponent implements OnInit {
     });
   }
 
-  editProductDetails(productId){
+  uploadProductImage(productId: number): void {
+    this.router.navigate(['/addNewProduct', { productId: productId }]);
+  }
+
+  editProductDetails(productId: number): void {
     this.router.navigate(['/addNewProduct',{productId:productId}]);
+  }
+
+  getFirstImage(product: Product): any {
+    if (!product || !product.productImages || product.productImages.length === 0) {
+      return '';
+    }
+
+    return product.productImages[0].url;
   }
 }
