@@ -1,24 +1,43 @@
-<mat-toolbar color="primary" class="top-toolbar">
+<header class="navbar-shell">
+  <div class="navbar-row" [class.admin-row]="isAdmin()">
+    <div class="nav-left">
+      <a class="brand-title" routerLink="/">E-Commerce Application</a>
 
-  <span>
-    E-Commerce Application
-  </span>
-  <span class="space-buttons"></span>
-  <button *ngIf="! isLoggedIn()" routerLink="/login" mat-raised-button color="primary">
-    Login
-  </button>
-   <button *ngIf="isLoggedIn()" (click)="logout()" mat-raised-button color="warn">
-    Logout
-  </button>
-</mat-toolbar>
+      <nav class="nav-links" *ngIf="!isAdmin()">
+        <a class="nav-link home-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+        <a class="nav-link cart-link" *ngIf="isLoggedIn()" routerLink="/cart" routerLinkActive="active">
+          <span class="cart-icon-wrap">
+            <mat-icon>shopping_cart</mat-icon>
+            <span class="cart-count">{{ cartItemCount }}</span>
+          </span>
+          <span>Cart</span>
+        </a>
+        <a class="nav-link" *ngIf="isLoggedIn()" routerLink="/myOrders" routerLinkActive="active">My Orders</a>
+      </nav>
+    </div>
 
-<mat-toolbar color ="primary" class="nav-toolbar" *ngIf="isLoggedIn()">
-  <button class="nav-button" mat-raised-button routerLink="/">Home</button>
-  <button class="nav-button" *ngIf="!isAdmin()" mat-raised-button routerLink="/cart">Cart</button>
-  <button class="nav-button" *ngIf="!isAdmin()" mat-raised-button routerLink="/myOrders">My Orders</button>
-  <button class="nav-button" *ngIf="isAdmin()" mat-raised-button routerLink="/addNewProduct">Add New Product</button>
-  <button class="nav-button" *ngIf="isAdmin()" mat-raised-button routerLink="/showProductDetails">Show Product Details</button>
-  <button class="nav-button" *ngIf="isAdmin()" mat-raised-button routerLink="/orderInformation">Order Information</button>
-  <button class="nav-button" *ngIf="isAdmin()" mat-raised-button routerLink="/admin/active-users">Active Users</button>
-  
-</mat-toolbar>
+    <div class="nav-center" *ngIf="!isAdmin()">
+      <form class="search-wrap" (ngSubmit)="searchProducts()">
+        <input
+          type="text"
+          name="searchKeyword"
+          [(ngModel)]="searchKeyword"
+          placeholder="Search products"
+          class="search-input">
+        <button type="submit" class="search-btn">Search</button>
+      </form>
+    </div>
+
+    <div class="nav-right auth-wrap">
+      <button *ngIf="!isLoggedIn()" routerLink="/login" class="auth-btn login-btn">Login</button>
+      <button *ngIf="isLoggedIn()" (click)="logout()" class="auth-btn logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <div class="admin-links" *ngIf="isLoggedIn() && isAdmin()">
+    <a class="admin-link" routerLink="/addNewProduct" routerLinkActive="active">Add New Product</a>
+    <a class="admin-link" routerLink="/showProductDetails" routerLinkActive="active">Show Product Details</a>
+    <a class="admin-link" routerLink="/orderInformation" routerLinkActive="active">Order Information</a>
+    <a class="admin-link" routerLink="/admin/active-users" routerLinkActive="active">Active Users</a>
+  </div>
+</header>

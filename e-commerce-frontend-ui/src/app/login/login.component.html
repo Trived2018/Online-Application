@@ -1,26 +1,34 @@
 <div class="container mt-5">
     <div class="card auth-card">
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{ errorMessage }}
+            <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+        </div>
+
         <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
             
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Username</mat-label>
-                <input matInput ngModel name="userName" id="userName" placeholder="Username">
+                <input matInput ngModel name="userName" id="userName" placeholder="Username" [disabled]="isLoading">
                 <mat-hint>Username</mat-hint>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Password</mat-label>
-                <input type="password" matInput ngModel name="userPassword" id="userPassword" placeholder="Password">
+                <input type="password" matInput ngModel name="userPassword" id="userPassword" placeholder="Password" [disabled]="isLoading">
                 <mat-hint>Password</mat-hint>
             </mat-form-field>
 
-            <button class="w-100" type="submit"mat-raised-button color="primary">Login</button>
+            <button class="w-100" type="submit" mat-raised-button color="primary" [disabled]="isLoading">
+                {{ isLoading ? 'Logging in...' : 'Login' }}
+            </button>
 
         </form>
 
     </div>
     <div class="text-center secondary-action">
     <br>
-        <button mat-raised-button type="button" (click)="registerUser()">Create an account</button>
+        <button mat-raised-button type="button" (click)="registerUser()" [disabled]="isLoading">Create an account</button>
     </div>
 </div>

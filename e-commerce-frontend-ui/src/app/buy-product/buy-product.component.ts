@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { OrderDetails } from '../_model/order-details.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from '../_model/product.model';
+import { CartStateService } from '../_services/cart-state.service';
 import { ProductService } from '../_services/product.service';
 
 declare var Razorpay: any;
@@ -27,6 +28,7 @@ export class BuyProductComponent implements OnInit {
     orderProductQuantityList: []
   }
   constructor(private activatedRoute: ActivatedRoute,
+    private cartStateService: CartStateService,
     private productService: ProductService,
     private router: Router,
     private injector: Injector) { }
@@ -37,7 +39,10 @@ export class BuyProductComponent implements OnInit {
 
     this.productDetails.forEach(
       x=>this.orderDetails.orderProductQuantityList.push(
-        {productId: x.productId,quantity:1}
+        {
+          productId: x.productId,
+          quantity: this.isSingleProductCheckout === 'true' ? 1 : this.cartStateService.getCartQuantity(x.productId)
+        }
       )
     );
     console.log(this.productDetails);
@@ -125,35 +130,62 @@ export class BuyProductComponent implements OnInit {
   }
 
   openTransactionModal(response: any, orderForm: NgForm){
-    var options ={
+    const options = {
       order_id: response.orderId,
       key: response.key,
       amount: response.amount,
       currency: response.currency,
-      name: 'Learn',
-      description: 'Payment of online shopping',
-      image: 'https://pixabay.com/images/download/miezekieze-cat-9643209_1920.jpg',
+      name: 'E-Commerce Application',
+      description: 'Payment for your order',
       handler: (response: any)=>{
         if(response!=null && response.razorpay_payment_id!=null){
           this.processResponse(response,orderForm);
         }else{
-          alert("Payment failed..")
+          alert("Payment failed.");
         }
-     
       },
-      prefil:{
-        name:'LPY',
-        email:'LPY@GMAIL.COM',
-        contact:'90909090'
+      prefill: {
+        name: this.orderDetails.fullName || 'Customer',
+        contact: this.orderDetails.contactNumber ? `+91${this.orderDetails.contactNumber}` : ''
       },
       notes:{
         address:'Online Shopping'
+      },
+      method: {
+        upi: true,
+        card: true,
+        netbanking: true,
+        wallet: true,
+        emi: true,
+        paylater: true
+      },
+      config: {
+        display: {
+          blocks: {
+            upi: {
+              name: 'Pay using UPI',
+              instruments: [{ method: 'upi' }]
+            },
+            other: {
+              name: 'Other Payment Methods',
+              instruments: [
+                { method: 'card' },
+                { method: 'netbanking' },
+                { method: 'wallet' }
+              ]
+            }
+          },
+          sequence: ['block.upi', 'block.other'],
+          preferences: {
+            show_default_blocks: true
+          }
+        }
       },
       theme:{
         color:'#F37254'
       }
     };
-    var razorPayObject = new Razorpay(options);
+    const razorPayObject = new Razorpay(options);
     razorPayObject.open();
   }
 
