@@ -56,35 +56,32 @@ public class UserService {
         userDao.save(user);
     }
 
-    public User registerNewUser(User user){
+    private String normalizePhoneNumber(String phoneNumber) {
+        if (phoneNumber == null) {
+            return null;
+        }
+        return phoneNumber.trim().replaceAll("[\\s\\-\\(\\)]", "");
+    }
+
+    public User registerNewUser(User user) {
         Role role = roleDao.findById("User").get();
 
-        Set<Role> roleSet=new HashSet<>();
+        Set<Role> roleSet = new HashSet<>();
         roleSet.add(role);
         user.setRole(roleSet);
 
-        String password=getEncodedPassword(user.getUserPassword());
+        String password = getEncodedPassword(user.getUserPassword());
         user.setUserPassword(password);
+
+        if (user.getUserPhoneNumber() != null && !user.getUserPhoneNumber().isEmpty()) {
+            user.setUserPhoneNumber(normalizePhoneNumber(user.getUserPhoneNumber()));
+        }
 
         user.setRole(roleSet);
         return userDao.save(user);
     }
 
-    public String getEncodedPassword(String password){
+    public String getEncodedPassword(String password) {
         return passwordEncoder.encode(password);
     }
-
-//    public User registerNewUser(User user) {
-//        Role role = roleDao.findById("User").get();
-//        Set<Role> userRoles = new HashSet<>();
-//        userRoles.add(role);
-//        user.setRole(userRoles);
-//        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
-//
- //            return userDao.save(user);
-   // }
-
-   // public String getEncodedPassword(String password) {
-   //     return passwordEncoder.encode(password);
-   // }
 }
