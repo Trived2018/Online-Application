@@ -72,11 +72,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/authenticate",
                         "/registerNewUser",
                         "/getAllProducts",
-                        "/getProductDetailsById/**"
+                        "/getProductDetailsById/**",
+                        "/api/otp/**",
+                        "/api/forgot-password/**"
                 ).permitAll()
-
-                .antMatchers("/api/admin/**").hasRole("Admin")
-                .antMatchers("/api/presence/**").authenticated()
 
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()

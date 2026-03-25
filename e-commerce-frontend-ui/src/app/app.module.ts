@@ -15,6 +15,7 @@ import { RouterModule } from '@angular/router';
 import { AuthGuard } from './_auth/auth.guard';
 import { AuthInterceptor } from './_auth/auth.interceptor';
 import { UserService } from './_services/user.service';
+import { OtpService } from './_services/otp.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
@@ -38,6 +39,7 @@ import { OrderDetailsComponent } from './order-details/order-details.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { ActiveUsersComponent } from './active-users/active-users.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,8 @@ import { ActiveUsersComponent } from './active-users/active-users.component';
     MyOrdersComponent,
     OrderDetailsComponent,
     AdminDashboardComponent,
-    ActiveUsersComponent
+    ActiveUsersComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -86,7 +89,8 @@ import { ActiveUsersComponent } from './active-users/active-users.component';
       useClass:AuthInterceptor,
       multi:true
     },
-    UserService
+    UserService,
+    OtpService
   ],
   bootstrap: [AppComponent]
 })
