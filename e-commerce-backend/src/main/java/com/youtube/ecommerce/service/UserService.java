@@ -60,12 +60,54 @@ public class UserService {
         if (phoneNumber == null) {
             return null;
         }
-        return phoneNumber.trim().replaceAll("[\\s\\-\\(\\)]", "");
+        // Remove all whitespace, dashes, parentheses, and spaces
+        String normalized = phoneNumber.trim().replaceAll("[\\s\\-\\(\\)]", "");
+        
+        // Ensure it starts with +
+        if (!normalized.startsWith("+")) {
+            normalized = "+" + normalized;
+        }
+        
+        System.out.println("DEBUG normalizePhoneNumber: Input='" + phoneNumber + "' -> Output='" + normalized + "'");
+        return normalized;
     }
 
     public User registerNewUser(User user) {
-        Role role = roleDao.findById("User").get();
+        // Normalize phone number first
+        if (user.getUserPhoneNumber() != null && !user.getUserPhoneNumber().isEmpty()) {
+            String normalizedPhone = normalizePhoneNumber(user.getUserPhoneNumber());
+            user.setUserPhoneNumber(normalizedPhone);
+            System.out.println("DEBUG registerNewUser: Checking duplicate for normalized phone: " + normalizedPhone);
+        }
 
+        // Check for duplicate registration by phone number
+        if (user.getUserPhoneNumber() != null && !user.getUserPhoneNumber().isEmpty()) {
+            boolean phoneExists = userDao.findByUserPhoneNumber(user.getUserPhoneNumber()).isPresent();
+            System.out.println("DEBUG registerNewUser: Phone '" + user.getUserPhoneNumber() + "' exists in DB: " + phoneExists);
+            
+            if (phoneExists) {
+                String errorMsg = "User with phone number " + user.getUserPhoneNumber() + " already exists. Please use a different phone number or login if you already have an account.";
+                System.err.println("ERROR: " + errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+        }
+
+        // Check for duplicate registration by username (email)
+        if (user.getUserName() != null && !user.getUserName().isEmpty()) {
+            String normalizedEmail = user.getUserName().toLowerCase().trim();
+            boolean emailExists = userDao.findByUserName(normalizedEmail).isPresent();
+            System.out.println("DEBUG registerNewUser: Email '" + normalizedEmail + "' exists in DB: " + emailExists);
+            
+            if (emailExists) {
+                String errorMsg = "User with email/username " + user.getUserName() + " already exists. Please use a different email or login if you already have an account.";
+                System.err.println("ERROR: " + errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+            // Store email in normalized form (lowercase)
+            user.setUserName(normalizedEmail);
+        }
+
+        Role role = roleDao.findById("User").get();
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(role);
         user.setRole(roleSet);
@@ -73,11 +115,7 @@ public class UserService {
         String password = getEncodedPassword(user.getUserPassword());
         user.setUserPassword(password);
 
-        if (user.getUserPhoneNumber() != null && !user.getUserPhoneNumber().isEmpty()) {
-            user.setUserPhoneNumber(normalizePhoneNumber(user.getUserPhoneNumber()));
-        }
-
-        user.setRole(roleSet);
+        System.out.println("INFO UserService: ✓ NEW USER REGISTERED - Phone: " + user.getUserPhoneNumber() + " | Email: " + user.getUserName());
         return userDao.save(user);
     }
 

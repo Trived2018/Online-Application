@@ -1,5 +1,6 @@
 package com.youtube.ecommerce.controller;
 
+import com.youtube.ecommerce.dao.UserDao;
 import com.youtube.ecommerce.dto.OtpSendRequest;
 import com.youtube.ecommerce.dto.OtpVerifyRequest;
 import com.youtube.ecommerce.service.OtpService;
@@ -22,6 +23,9 @@ public class OtpController {
 
     @Autowired
     private OtpService otpService;
+    
+    @Autowired
+    private UserDao userDao;
 
     @PostMapping("/send")
     public ResponseEntity<Map<String, Object>> sendOtp(@RequestBody OtpSendRequest request) {
@@ -30,7 +34,23 @@ public class OtpController {
         }
 
         try {
-            String status = otpService.sendOtp(request.getPhoneNumber());
+            // Normalize phone number for consistency
+            String phoneNumber = request.getPhoneNumber().trim().replaceAll("[\\s\\-\\(\\)]", "");
+            if (!phoneNumber.startsWith("+")) {
+                phoneNumber = "+" + phoneNumber;
+            }
+            
+            System.out.println("INFO OtpController.sendOtp: Normalized phone number: " + phoneNumber);
+            
+            // Check if phone number already exists in database (already registered)
+            if (userDao.existsByUserPhoneNumber(phoneNumber)) {
+                System.out.println("WARN OtpController.sendOtp: Phone number already registered: " + phoneNumber);
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    errorResponse("You have already registered with this mobile number. Please try a new number.")
+                );
+            }
+            
+            String status = otpService.sendOtp(phoneNumber);
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -38,8 +58,10 @@ public class OtpController {
             response.put("status", status);
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
+            System.err.println("ERROR OtpController.sendOtp: " + ex.getMessage());
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorResponse("Unable to send OTP. Please check Twilio configuration and phone number."));
+                    .body(errorResponse("Failed to send OTP: " + ex.getMessage()));
         }
     }
 
@@ -61,8 +83,10 @@ public class OtpController {
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception ex) {
+            System.err.println("ERROR OtpController.verifyOtp: " + ex.getMessage());
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorResponse("Unable to verify OTP. Please try again."));
+                    .body(errorResponse("Failed to verify OTP: " + ex.getMessage()));
         }
     }
 

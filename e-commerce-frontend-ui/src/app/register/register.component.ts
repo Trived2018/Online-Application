@@ -58,8 +58,8 @@ export class RegisterComponent implements OnInit {
         this.isLoadingSendOtp = false;
       },
       (error) => {
-        console.log('Send OTP Error:', error);
-        this.errorMessage = 'Unable to send OTP. Please check phone number and try again.';
+        // Extract backend error message if available, otherwise use fallback
+        this.errorMessage = error?.error?.message || 'You have already registered with this mobile number. Please try a new number.';
         this.successMessage = '';
         this.isLoadingSendOtp = false;
       }
@@ -91,8 +91,8 @@ export class RegisterComponent implements OnInit {
         this.isLoadingVerifyOtp = false;
       },
       (error) => {
-        console.log('Verify OTP Error:', error);
-        this.errorMessage = 'Unable to verify OTP. Please check the code and try again.';
+        // Extract backend error message if available, otherwise use fallback
+        this.errorMessage = error?.error?.message || 'You have already registered with this mobile number. Please try a new number.';
         this.successMessage = '';
         this.isLoadingVerifyOtp = false;
       }
