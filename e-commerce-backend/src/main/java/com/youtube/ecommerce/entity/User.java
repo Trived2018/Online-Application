@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "app_user")
 public class User {
 
     @Id
@@ -13,12 +14,12 @@ public class User {
     private String userPassword;
     private String userPhoneNumber;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "USER_ROLE",
+    @JoinTable(name = "app_user_role",
             joinColumns = {
-                    @JoinColumn(name = "USER_ID")
+                    @JoinColumn(name = "USER_ID", referencedColumnName = "userName")
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "ROLE_ID")
+                    @JoinColumn(name = "ROLE_ID", referencedColumnName = "roleName")
             }
     )
     private Set<Role> role;
