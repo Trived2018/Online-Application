@@ -73,11 +73,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/registerNewUser",
                         "/getAllProducts",
                         "/getProductDetailsById/**",
-                        "/api/otp/**",
-                        "/api/forgot-password/**",
-                        "/api/actuator/**",
-                        "/api/actuator/health",
-                        "/api/actuator/health/**"
+                        "/otp/**",
+                        "/forgot-password/**",
+                        "/actuator/**",
+                        "/actuator/health",
+                        "/actuator/health/**"
                 ).permitAll()
 
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
