@@ -1,8 +1,9 @@
 package com.youtube.ecommerce.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,20 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RootController {
 
-    @Autowired
-    private ResourceLoader resourceLoader;
-
     /**
      * Root mapping - serve index.html
      */
     @GetMapping("/")
-    public ResponseEntity<Resource> index() {
+    public ResponseEntity<String> index() {
         try {
-            Resource resource = resourceLoader.getResource("classpath:static/index.html");
+            ClassPathResource resource = new ClassPathResource("static/index.html");
+            InputStream inputStream = resource.getInputStream();
+            String content = new String(inputStream.readAllBytes());
+            inputStream.close();
             return ResponseEntity.ok()
                     .contentType(MediaType.TEXT_HTML)
-                    .body(resource);
-        } catch (Exception e) {
+                    .body(content);
+        } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.notFound().build();
         }
     }
@@ -40,13 +42,17 @@ public class RootController {
      * Matches any path that doesn't start with api, assets, or index
      */
     @GetMapping("/{x:(?!api|assets|index).*}")
-    public ResponseEntity<Resource> forwardToIndex(@PathVariable String x) {
+    public ResponseEntity<String> forwardToIndex(@PathVariable String x) {
         try {
-            Resource resource = resourceLoader.getResource("classpath:static/index.html");
+            ClassPathResource resource = new ClassPathResource("static/index.html");
+            InputStream inputStream = resource.getInputStream();
+            String content = new String(inputStream.readAllBytes());
+            inputStream.close();
             return ResponseEntity.ok()
                     .contentType(MediaType.TEXT_HTML)
-                    .body(resource);
-        } catch (Exception e) {
+                    .body(content);
+        } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.notFound().build();
         }
     }
