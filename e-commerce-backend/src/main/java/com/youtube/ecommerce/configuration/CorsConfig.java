@@ -20,7 +20,7 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         
         // Allow all origins for development 
-        configuration.setAllowedOriginPatterns("*");
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         
         // Allow all HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
