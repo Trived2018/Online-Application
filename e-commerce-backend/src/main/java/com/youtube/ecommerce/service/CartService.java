@@ -9,6 +9,7 @@ import com.youtube.ecommerce.entity.Product;
 import com.youtube.ecommerce.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class CartService {
     @Autowired
     private UserDao userDao;
 
+    @Transactional
     public void deleteCartItem(Integer cartId){
         String username = JwtRequestFilter.CURRENT_USER;
         User user = userDao.findById(username).orElse(null);
@@ -36,6 +38,7 @@ public class CartService {
 
         cartsToDelete.forEach(cart -> cartDao.deleteById(cart.getCardId()));
     }
+    @Transactional
     public Cart addToCart(Integer productId){
         Product product=productDao.findById(productId).get();
         String username=JwtRequestFilter.CURRENT_USER;

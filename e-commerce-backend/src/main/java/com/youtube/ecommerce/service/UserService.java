@@ -7,6 +7,7 @@ import com.youtube.ecommerce.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +24,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void initRoleAndUser() {
 
         Role adminRole = new Role();
@@ -72,6 +74,7 @@ public class UserService {
         return normalized;
     }
 
+    @Transactional
     public User registerNewUser(User user) {
         // Normalize phone number first
         if (user.getUserPhoneNumber() != null && !user.getUserPhoneNumber().isEmpty()) {
