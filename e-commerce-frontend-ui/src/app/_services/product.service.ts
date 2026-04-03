@@ -4,13 +4,14 @@ import { Product } from '../_model/product.model';
 import { OrderDetails } from '../_model/order-details.model';
 import { MyOrderDetails } from '../_model/order.model';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  private baseUrl = "";
+  private baseUrl = environment.apiUrl;
 
   constructor(private httpClient: HttpClient) { }
 
