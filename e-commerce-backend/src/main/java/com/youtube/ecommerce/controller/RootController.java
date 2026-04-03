@@ -1,8 +1,5 @@
 package com.youtube.ecommerce.controller;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +19,7 @@ public class RootController {
      */
     @GetMapping("/")
     public ResponseEntity<String> index() {
-        try {
-            ClassPathResource resource = new ClassPathResource("static/index.html");
-            InputStream inputStream = resource.getInputStream();
-            String content = new String(inputStream.readAllBytes());
-            inputStream.close();
-            return ResponseEntity.ok()
-                    .contentType(MediaType.TEXT_HTML)
-                    .body(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
+        return serveIndexHtml();
     }
 
     /**
@@ -43,15 +29,28 @@ public class RootController {
      */
     @GetMapping("/{x:(?!api|assets|index).*}")
     public ResponseEntity<String> forwardToIndex(@PathVariable String x) {
+        return serveIndexHtml();
+    }
+
+    /**
+     * Helper method to read and serve index.html from classpath
+     */
+    private ResponseEntity<String> serveIndexHtml() {
         try {
             ClassPathResource resource = new ClassPathResource("static/index.html");
-            InputStream inputStream = resource.getInputStream();
-            String content = new String(inputStream.readAllBytes());
-            inputStream.close();
+            if (!resource.exists()) {
+                System.err.println("ERROR: index.html not found in classpath!");
+                return ResponseEntity.notFound().build();
+            }
+            
+            byte[] fileContent = resource.getInputStream().readAllBytes();
+            String content = new String(fileContent);
+            
             return ResponseEntity.ok()
                     .contentType(MediaType.TEXT_HTML)
                     .body(content);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.err.println("ERROR reading index.html: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.notFound().build();
         }
