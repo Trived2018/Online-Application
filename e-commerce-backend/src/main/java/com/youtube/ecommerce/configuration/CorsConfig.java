@@ -19,12 +19,8 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Allow all origins for development - restrict in production
-        configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:8081",
-            "http://localhost:4200",
-            "https://ecommerce-backend-4dpx.onrender.com"
-        ));
+        // Allow all origins for development 
+        configuration.setAllowedOriginPatterns("*");
         
         // Allow all HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
