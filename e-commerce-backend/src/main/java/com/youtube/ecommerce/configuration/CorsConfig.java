@@ -52,8 +52,8 @@ public class CorsConfig {
             "Content-Type"
         ));
         
-        // Allow credentials (cookies, auth headers)
-        configuration.setAllowCredentials(true);
+        // Disable credentials to allow wildcard origins
+        configuration.setAllowCredentials(false);
         
         // Cache preflight for 1 hour
         configuration.setMaxAge(3600L);
