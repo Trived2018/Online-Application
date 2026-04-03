@@ -25,7 +25,6 @@ public class CorsConfig {
             "http://localhost:4200",
             "https://ecommerce-backend-4dpx.onrender.com"
         ));
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         
         // Allow all HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
