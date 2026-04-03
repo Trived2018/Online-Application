@@ -2,6 +2,7 @@ package com.youtube.ecommerce.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -9,15 +10,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * This enables SPA (Single Page Application) routing
  */
 @Controller
-@RequestMapping("/")
 public class RootController {
 
     /**
-     * Serve index.html for root and all non-API routes (SPA)
+     * Root mapping - serve index.html
+     */
+    @GetMapping("/")
+    public String index() {
+        return "forward:/index.html";
+    }
+
+    /**
+     * Catch-all for Angular routes - forward to index.html
      * This allows Angular routing to work properly
      */
-    @GetMapping({"", "/{path:^(?!api|assets|index).*$}", "/**/{path:^(?!api).*$}"})
-    public String index() {
+    @GetMapping("/{x:(?!api|assets|index).*}")
+    public String forwardToIndex(@PathVariable String x) {
         return "forward:/index.html";
     }
 }
