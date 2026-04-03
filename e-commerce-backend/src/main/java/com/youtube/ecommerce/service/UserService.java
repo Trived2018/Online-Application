@@ -76,23 +76,24 @@ public class UserService {
 
     @Transactional
     public User registerNewUser(User user) {
-        // Normalize phone number first
+        // Phone number is now optional - skip normalization and checks if not provided
         if (user.getUserPhoneNumber() != null && !user.getUserPhoneNumber().isEmpty()) {
             String normalizedPhone = normalizePhoneNumber(user.getUserPhoneNumber());
             user.setUserPhoneNumber(normalizedPhone);
             System.out.println("DEBUG registerNewUser: Checking duplicate for normalized phone: " + normalizedPhone);
-        }
-
-        // Check for duplicate registration by phone number
-        if (user.getUserPhoneNumber() != null && !user.getUserPhoneNumber().isEmpty()) {
-            boolean phoneExists = userDao.findByUserPhoneNumber(user.getUserPhoneNumber()).isPresent();
-            System.out.println("DEBUG registerNewUser: Phone '" + user.getUserPhoneNumber() + "' exists in DB: " + phoneExists);
+            
+            // Check for duplicate registration by phone number
+            boolean phoneExists = userDao.findByUserPhoneNumber(normalizedPhone).isPresent();
+            System.out.println("DEBUG registerNewUser: Phone '" + normalizedPhone + "' exists in DB: " + phoneExists);
             
             if (phoneExists) {
-                String errorMsg = "User with phone number " + user.getUserPhoneNumber() + " already exists. Please use a different phone number or login if you already have an account.";
+                String errorMsg = "User with phone number " + normalizedPhone + " already exists. Please use a different phone number or login if you already have an account.";
                 System.err.println("ERROR: " + errorMsg);
                 throw new RuntimeException(errorMsg);
             }
+        } else {
+            // Set phone to null if not provided
+            user.setUserPhoneNumber(null);
         }
 
         // Check for duplicate registration by username (email)

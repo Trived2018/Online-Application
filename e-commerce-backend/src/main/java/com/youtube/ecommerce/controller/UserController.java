@@ -42,10 +42,6 @@ public class UserController {
             if (user.getUserPassword() == null || user.getUserPassword().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body(errorResponse("Password is required"));
             }
-            
-            if (user.getUserPhoneNumber() == null || user.getUserPhoneNumber().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(errorResponse("Phone number is required for 2FA/OTP"));
-            }
 
             User registeredUser = userService.registerNewUser(user);
             System.out.println("INFO UserController: Registration successful for user: " + user.getUserName());
