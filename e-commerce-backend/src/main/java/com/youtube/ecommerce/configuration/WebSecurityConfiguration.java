@@ -67,17 +67,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/login"
                 ).permitAll()
 
-                // ✅ Public APIs
+                // ✅ Public APIs (with /api prefix - context path removed)
                 .antMatchers(
-                        "/authenticate",
-                        "/registerNewUser",
-                        "/getAllProducts",
-                        "/getProductDetailsById/**",
-                        "/otp/**",
-                        "/forgot-password/**",
-                        "/actuator/**",
-                        "/actuator/health",
-                        "/actuator/health/**"
+                        "/api/authenticate",
+                        "/api/registerNewUser",
+                        "/api/getAllProducts",
+                        "/api/getProductDetailsById/**",
+                        "/api/otp/**",
+                        "/api/forgot-password/**",
+                        "/api/actuator/**",
+                        "/api/actuator/health",
+                        "/api/actuator/health/**"
                 ).permitAll()
 
                 .antMatchers(HttpHeaders.ALLOW).permitAll()

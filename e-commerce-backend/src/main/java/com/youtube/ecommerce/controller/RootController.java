@@ -1,23 +1,43 @@
 package com.youtube.ecommerce.controller;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Root Controller - Handles SPA routing
- * Forwards non-API requests to index.html for Angular routing
+ * Root Controller - Serves Angular frontend at root
  */
-@Controller
+@RestController
+@RequestMapping("/")
 public class RootController {
 
-    /**
-     * Catch-all for client-side routing
-     * Returns index.html for all non-API, non-static routes
-     * This allows Angular routing to work properly
-     */
-    @GetMapping(value = { "/{x:[\\w\\-]+}",
-                          "/{x:^(?!api|assets|actuator).*$}/**" })
-    public String forwardToAngular() {
-        return "forward:/index.html";
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+    @GetMapping("")
+    public ResponseEntity<byte[]> root() throws Exception {
+        return serveIndexHtml();
+    }
+
+    @GetMapping("index.html")
+    public ResponseEntity<byte[]> indexHtml() throws Exception {
+        return serveIndexHtml();
+    }
+
+    private ResponseEntity<byte[]> serveIndexHtml() throws Exception {
+        var resource = resourceLoader.getResource("classpath:static/index.html");
+        if (!resource.exists()) {
+            System.out.println("ERROR: index.html not found!");
+            return ResponseEntity.notFound().build();
+        }
+        byte[] content = resource.getInputStream().readAllBytes();
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_HTML)
+                .cacheControl(org.springframework.http.CacheControl.noCache())
+                .body(content);
     }
 }
