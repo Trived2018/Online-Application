@@ -29,7 +29,7 @@ public class IndexController {
             "/myOrders"
     })
     public String forward() {
-        return "forward:/jwt-youtube-ui/index.html";
+        return "forward:/index.html";
     }
 }
 

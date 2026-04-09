@@ -1,13 +1,19 @@
 services:
   - type: web
-    name: ecommerce-backend
+    name: ecommerce-api
     runtime: docker
     region: oregon
     plan: standard
-    healthCheckPath: /actuator/health
+    healthCheckPath: /api/actuator/health
+    healthCheckInterval: 30
+    healthCheckTimeout: 30
     envVars:
       - key: PORT
-        value: 8080
+        value: 8081
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JAVA_OPTS
+        value: -Xmx512m -Xms256m
       - key: TWILIO_ACCOUNT_SID
         sync: false
       - key: TWILIO_AUTH_TOKEN
@@ -18,3 +24,16 @@ services:
         fromDatabase:
           name: ecommerce-db
           property: connectionString
+      - key: DB_POOL_SIZE
+        value: 5
+      - key: DB_MIN_IDLE
+        value: 1
+
+databases:
+  - name: ecommerce-db
+    database: ecommerce
+    user: postgres
+    region: oregon
+    plan: standard
+    version: 14
+

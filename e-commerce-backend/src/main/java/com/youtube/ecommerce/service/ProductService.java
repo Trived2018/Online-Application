@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,14 @@ public class ProductService {
     @Autowired
     private CartDao cartDao;
 
+    @Transactional
     public Product addNewProduct(Product product){
         return productDao.save(product);
+    }
+
+    @Transactional
+    public void deleteProductDetails(Integer productId){
+        productDao.deleteById(productId);
     }
 
     public List<Product> getAllProducts(int pageNumber, String searchKey){
@@ -46,10 +53,6 @@ public class ProductService {
 
     public Product getProductDetailsById(Integer productId){
         return productDao.findById(productId).get();
-    }
-
-    public void deleteProductDetails(Integer productId){
-        productDao.deleteById(productId);
     }
 
     public List<Product> getProductDetails(boolean isSingleProductCheckout,Integer productId){

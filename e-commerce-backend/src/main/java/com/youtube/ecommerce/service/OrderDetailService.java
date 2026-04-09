@@ -11,6 +11,7 @@ import com.youtube.ecommerce.entity.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,7 @@ public class OrderDetailService {
         User user=userDao.findById(currentUser).get();
         return orderDetailDao.findByUser(user);
     }
+    @Transactional
     public void placeOrder(OrderInput orderInput,boolean isSingleProductCheckout){
         List<OrderProductQuantity> productQuantityList=orderInput.getOrderProductQuantityList();
 
@@ -88,6 +90,7 @@ public class OrderDetailService {
         }
     }
 
+    @Transactional
     public void markOrderAsDelivered(Integer orderId){
         OrderDetail orderDetail = orderDetailDao.findById(orderId).get();
         if(orderDetail !=null){

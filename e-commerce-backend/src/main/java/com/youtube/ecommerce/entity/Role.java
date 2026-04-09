@@ -2,8 +2,10 @@ package com.youtube.ecommerce.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "app_role")
 public class Role {
 
     @Id

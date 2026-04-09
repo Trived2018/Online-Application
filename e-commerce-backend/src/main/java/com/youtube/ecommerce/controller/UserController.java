@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
@@ -39,10 +41,6 @@ public class UserController {
             
             if (user.getUserPassword() == null || user.getUserPassword().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body(errorResponse("Password is required"));
-            }
-            
-            if (user.getUserPhoneNumber() == null || user.getUserPhoneNumber().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(errorResponse("Phone number is required for 2FA/OTP"));
             }
 
             User registeredUser = userService.registerNewUser(user);
